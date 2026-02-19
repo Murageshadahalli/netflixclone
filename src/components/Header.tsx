@@ -1,5 +1,5 @@
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
-import { Search, User, LogOut, UserPlus } from 'lucide-react'
+import { User, LogOut, UserPlus } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 
 function HeaderLink({ to, label }: { to: string; label: string }) {
