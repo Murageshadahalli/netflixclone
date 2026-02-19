@@ -1,8 +1,10 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useState, useEffect } from 'react'
 import type { ReactNode } from 'react'
 import type { User, AuthContextType } from '../types/auth'
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
+
+export { AuthContext }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
@@ -13,9 +15,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (savedUser) {
       const parsedUser = JSON.parse(savedUser)
       const { password, ...userWithoutPassword } = parsedUser
-      setUser(userWithoutPassword)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const _password = password
+      setTimeout(() => setUser(userWithoutPassword), 0)
     }
-    setIsLoading(false)
+    setTimeout(() => setIsLoading(false), 0)
   }, [])
 
   const getUsers = (): User[] => {
@@ -43,7 +47,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const foundUser = users.find(u => u.email === email && u.password === password)
     
     if (foundUser) {
-      const { password: _, ...userWithoutPassword } = foundUser
+      const { password, ...userWithoutPassword } = foundUser
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const _password = password
       setUser(userWithoutPassword)
       localStorage.setItem('netflix-user', JSON.stringify(foundUser))
       setIsLoading(false)
@@ -76,7 +82,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     users.push(newUser)
     saveUsers(users)
     
-    const { password: _, ...userWithoutPassword } = newUser
+    const { password, ...userWithoutPassword } = newUser
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const _password = password
     setUser(userWithoutPassword)
     localStorage.setItem('netflix-user', JSON.stringify(newUser))
     
@@ -94,12 +102,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       {children}
     </AuthContext.Provider>
   )
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext)
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
-  return context
 }

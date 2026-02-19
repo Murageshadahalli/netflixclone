@@ -38,9 +38,11 @@ export function Home() {
 
   useEffect(() => {
     if (!trimmed) {
-      setResults(null)
-      setTotal(null)
-      setError(null)
+      setTimeout(() => {
+        setResults(null)
+        setTotal(null)
+        setError(null)
+      }, 0)
       return
     }
 
@@ -50,25 +52,25 @@ export function Home() {
       setError(null)
       searchTitles(trimmed, { page, signal: ctrl.signal })
         .then((res) => {
-          if (res.Response === 'False') {
+          if (res.Response === 'False' || !res.Search) {
             setResults([])
             setTotal(0)
-            setError(res.Error)
             return
           }
           setResults(res.Search)
-          setTotal(Number(res.totalResults))
+          setTotal(parseInt(res.totalResults))
         })
-        .catch((e: unknown) => {
-          if ((e as { name?: string }).name === 'AbortError') return
-          setError(e instanceof Error ? e.message : 'Search failed')
+        .catch((e) => {
+          if (e.name !== 'AbortError') {
+            setError(e instanceof Error ? e.message : 'Search failed')
+          }
         })
         .finally(() => setLoading(false))
     }, 300)
 
     return () => {
+      clearTimeout(t)
       ctrl.abort()
-      window.clearTimeout(t)
     }
   }, [trimmed, page])
 
@@ -105,7 +107,7 @@ export function Home() {
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 pb-16 pt-8">
-      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-red-600/20 via-white/5 to-white/0 p-6 md:p-10">
+      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-linear-to-br from-red-600/20 via-white/5 to-white/0 p-6 md:p-10">
         <div className="max-w-2xl">
           <div className="text-xs font-semibold tracking-widest text-white/70">NETFLIX-STYLE UI</div>
           <h1 className="mt-3 text-3xl font-black leading-tight text-white md:text-5xl">

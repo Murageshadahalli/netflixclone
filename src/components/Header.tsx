@@ -1,4 +1,4 @@
-import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { User, LogOut, UserPlus } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 
@@ -19,7 +19,6 @@ function HeaderLink({ to, label }: { to: string; label: string }) {
 }
 
 export function Header() {
-  const { pathname } = useLocation()
   const navigate = useNavigate()
   const { user, logout } = useAuth()
 
